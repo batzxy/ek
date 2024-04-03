@@ -1,0 +1,36 @@
+version: "3"
+services:
+ elasticsearch:
+  image: elasticsearch:7.17.19 #make whatever is the latest one
+  container_name: elasticsearch
+  environment:
+   - discovery.type=single-node
+   - bootstrap.memory_lock=true
+   - "ES_JAVA_OPTS=-Xms2g -Xmx2g" #2GB 
+   - network.host=0.0.0.0
+   - xpack.security.enabled=false
+   - xpack.monitoring.enabled=false
+  volumes:
+   - "/etc/timezone:/etc/timezone:ro"
+   - "/etc/localtime:/etc/localtime:ro"
+  ulimits:
+   memlock:
+    soft: -1
+    hard: -1
+  #ports: #no need for exposing port when network mode is host
+   #- "9200:9200"
+  network_mode: "host"
+
+ kibana:
+  image: kibana:7.17.19 #make whatever is the latest one
+  container_name: kibana
+  environment:
+   - server.host=0.0.0.0
+   - ELASTICSEARCH_HOSTS=http://0.0.0.0:9200
+  volumes:
+   - "/etc/timezone:/etc/timezone:ro"
+   - "/etc/localtime:/etc/localtime:ro"
+  #ports: #no need for exposing port when network mode is host
+   #- "5601:5601"
+  network_mode: "host"
+#EOF
